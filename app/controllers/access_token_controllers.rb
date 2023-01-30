@@ -1,21 +1,13 @@
 class AccessTokenController < ApplicationController
+    before_action :authorized!, only: :destroy
     def create
         authenticator = UserAuthenticator.new(params[:code])
-        begin
-            authenticator.perform
-        rescue UserAuthenticator::AuthenticationError
-        end
+        authenticator.perform
+
+        render json: authenticator.access_token, status: :created
     end
 
-    private
-    
-    def authentication_error
-        error = {
-            "status" => "401",
-            "source" => {"pointer" => "/code"},
-            "title" => "Authentication code is invalid",
-            "detail" => "You must provide valid code in order to change it for token."
-        } 
-        render json: { "error" : [error] }, status: 401
+    def destroy
+        current_user.access_token.destroy
     end
 end
