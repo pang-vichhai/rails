@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
+  
   resources :infos
   resources :articles
-  resources :blogs, only: %i[index show]
+  resources :blogs do
+    resources :commentings, only: [:index, :create]
+  end
   post 'login', to: 'access_token#create'
   delete 'logout', to: 'access_token#destroy'
   # get '/blogs', to: 'blogs#index'

@@ -1,5 +1,5 @@
 class AccessTokenController < ApplicationController
-    before_action :authorized!, only: :destroy
+    before_action :authorized!, only: :create
     def create
         authenticator = UserAuthenticator.new(params[:code])
         authenticator.perform

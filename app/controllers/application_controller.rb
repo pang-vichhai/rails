@@ -8,9 +8,9 @@ class ApplicationController < ActionController::API
     class AuthorizationError < StandardError; end
 
     rescue_from UserAuthenticator::AuthenticationError, with: :authentication_error
-
     rescue_from AuthorizationError, with: :authorization_error
 
+    before_action :authorize!
 
     private
 
@@ -35,7 +35,7 @@ class ApplicationController < ActionController::API
             "title" => "Authentication code is invalid",
             "detail" => "You must provide valid code in order to change it for token."
         } 
-        render json: { "error" : [error] }, status: 401
+        render json: { "errors" : [error] }, status: 401
     end
 
     def authorization_error
@@ -45,6 +45,6 @@ class ApplicationController < ActionController::API
             "title" => "Authentication code is invalid",
             "detail" => "You must provide valid code in order to change it for token."
         } 
-        render json: { "error" : [error] }, status: 401
+        render json: { "errors" : [error] }, status: 401
     end
 end
