@@ -4,4 +4,5 @@ class User < ApplicationRecord
 
     has_one :access_tokens, dependent: :destroy
     has_many :blogs, dependent: :destroy
+    has_many :commentings, dependent: :destroy
 end

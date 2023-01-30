@@ -4,9 +4,11 @@ class CommentingsController < ApplicationController
 
   # GET /commentings
   def index
-    @commentings = Commenting.all
-
-    render json: @commentings
+    # @commentings = Commenting.all
+    commentings = @blog.commentings
+      page(params[:page]).
+      per(params[:per_page])
+    render json: commentings
   end
 
   # GET /commentings/1
@@ -18,11 +20,12 @@ class CommentingsController < ApplicationController
   def create
     @commenting = Commenting.new(commenting_params.merge(user: current_user))
 
-    if @commenting.save
-      render json: @commenting, status: :created, location: @commenting
-    else
-      render json: @commenting.errors, status: :unprocessable_entity
-    end
+    @commenting.save!
+    render json: @commenting, status: :created, location: @blog
+  rescue
+    render json: @commenting, adapter: 'json_api'
+      serializer: ErrorSerializer
+      status: :unprocessable_entity
   end
 
   # PATCH/PUT /commentings/1
@@ -51,6 +54,8 @@ class CommentingsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def commenting_params
-      params.require(:commenting).permit(:content, :article_id)
+      params.require(:data).require(:attributes).
+        permit(:content) || 
+        ActionController::Parameters.new
     end
 end
