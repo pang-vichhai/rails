@@ -17,7 +17,7 @@ class BlogsController < ApplicationController
         blog.save! 
         render json: blog, status: :created
     rescue
-        render json: blog, adapter : 'json_api',
+        render json: blog, adapter: :json_api,
             serializer: ErrorSerializer,
             status: :unprocessable_entity
     end
@@ -28,7 +28,7 @@ class BlogsController < ApplicationController
     rescue ActiveRecord::RecordNotFound
         authorization_error
     rescue
-        render json: blog, adapter : 'json_api',
+        render json: blog, adapter: :json_api,
             serializer: ErrorSerializer,
             status: :unprocessable_entity
     end
